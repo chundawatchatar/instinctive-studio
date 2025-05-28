@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import  categoryRoutes from './category.routes';
+import  categoryRoutes from './categories.routes';
 import  searchRoutes from './search.routes';
 
 const router: Router = Router();
 
-router.use('/category', categoryRoutes);
+router.use('/categories', categoryRoutes);
 router.use('/search', searchRoutes);
 
 router.get('/ping', (req, res) => {

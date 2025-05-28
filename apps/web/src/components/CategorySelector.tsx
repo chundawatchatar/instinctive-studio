@@ -23,9 +23,9 @@ export default function CategorySelector({ selectedCategory, onCategoryChange }:
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/categories')
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/categories`)
       const data = await response.json()
-      setCategories(data.categories || [])
+      setCategories(data || [])
     } catch (error) {
       console.error('Error fetching categories:', error)
     } finally {

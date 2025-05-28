@@ -65,7 +65,7 @@ export default function SearchPage() {
         params.set('filters', encodeURIComponent(JSON.stringify(searchFilters)))
       }
       
-      const response = await fetch(`/api/search?${params.toString()}`)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/search?${params.toString()}`)
       if (!response.ok) {
         throw new Error('Search failed')
       }
