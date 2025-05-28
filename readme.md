@@ -92,7 +92,3 @@ GET /api/v1/search?q=electronics&category=laptop&filters=%7B%22brand%22%3A%5B%22
 ## 📄 License
 
 MIT
-
----
-
-*Let me know if you want it adjusted for a private repo, test instructions, or deployment!*
