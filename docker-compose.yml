@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo
+    container_name: instinctive-studio-mongo-db
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express
+    container_name: instinctive-studio-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
