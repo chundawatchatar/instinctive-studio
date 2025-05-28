@@ -2,6 +2,12 @@
 
 import { useState } from 'react'
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Facet, SearchFilters } from '@/types'
 
 interface FilterPanelProps {
@@ -60,63 +66,82 @@ export default function FilterPanel({ facets, filters, onFiltersChange }: Filter
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Filter className="h-5 w-5 text-gray-600" />
-          <h3 className="font-semibold text-gray-900">Filters</h3>
-        </div>
-        {hasActiveFilters && (
-          <button
-            onClick={clearAllFilters}
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            Clear all
-          </button>
-        )}
-      </div>
-
-      <div className="space-y-4">
-        {facets.map((facet) => (
-          <div key={facet.key} className="border-b border-gray-100 pb-4 last:border-b-0">
-            <button
-              onClick={() => toggleFacet(facet.key)}
-              className="flex items-center justify-between w-full text-left py-2"
-            >
-              <span className="font-medium text-gray-700">{facet.label}</span>
-              {expandedFacets.has(facet.key) ? (
-                <ChevronUp className="h-4 w-4 text-gray-500" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              )}
-            </button>
-            
-            {expandedFacets.has(facet.key) && (
-              <div className="mt-2 space-y-2 max-h-48 overflow-y-auto">
-                {facet.options.map((option) => {
-                  const isChecked = Array.isArray(filters[facet.key]) 
-                    ? (filters[facet.key] as string[]).includes(option.value)
-                    : filters[facet.key] === option.value
-                  
-                  return (
-                    <label key={option.value} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={(e) => handleFilterChange(facet.key, option.value, e.target.checked)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-gray-600">
-                        {option.label} ({option.count})
-                      </span>
-                    </label>
-                  )
-                })}
-              </div>
-            )}
+    <Card>
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Filter className="h-5 w-5 text-muted-foreground" />
+            <h3 className="font-semibold">Filters</h3>
           </div>
-        ))}
-      </div>
-    </div>
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              className="text-primary hover:text-primary/80"
+            >
+              Clear all
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+
+      <CardContent className="pt-0">
+        <div className="space-y-4">
+          {facets.map((facet) => (
+            <Collapsible
+              key={facet.key}
+              open={expandedFacets.has(facet.key)}
+              onOpenChange={() => toggleFacet(facet.key)}
+              className="border-b border-border pb-4 last:border-b-0"
+            >
+              <CollapsibleTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex w-full items-center justify-between p-2 font-medium hover:bg-muted/50"
+                >
+                  <span>{facet.label}</span>
+                  {expandedFacets.has(facet.key) ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </Button>
+              </CollapsibleTrigger>
+              
+              <CollapsibleContent className="mt-2">
+                <ScrollArea className="h-48">
+                  <div className="space-y-2 pr-3">
+                    {facet.options.map((option) => {
+                      const isChecked = Array.isArray(filters[facet.key]) 
+                        ? (filters[facet.key] as string[]).includes(option.value)
+                        : filters[facet.key] === option.value
+                      
+                      return (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`${facet.key}-${option.value}`}
+                            checked={isChecked}
+                            onCheckedChange={(checked) => 
+                              handleFilterChange(facet.key, option.value, checked as boolean)
+                            }
+                          />
+                          <Label 
+                            htmlFor={`${facet.key}-${option.value}`}
+                            className="text-sm text-muted-foreground cursor-pointer flex-1"
+                          >
+                            {option.label} ({option.count})
+                          </Label>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </ScrollArea>
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
