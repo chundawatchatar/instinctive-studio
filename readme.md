@@ -1,196 +1,98 @@
-# B2B Marketplace Search - Next.js Frontend
+# Instinctive Studio B2B Marketplace (MERN)
 
-A modern, full-stack B2B marketplace search application built with Next.js, TypeScript, MongoDB, and Tailwind CSS. Features intelligent search, dynamic filtering, and category-specific facets.
+A modern full-stack B2B marketplace prototype built with the MERN stack. Features dynamic category-specific attributes, a smart filterable search API with pagination, and a beautiful, responsive Next.js frontend.
 
-## Features
+---
 
-- **Natural Language Search**: Full-text search across product titles and descriptions
-- **Dynamic Filtering**: Category-specific filters that adapt based on search context
-- **Real-time Facets**: Live filter counts that update based on current search results
-- **Responsive Design**: Mobile-first design with Tailwind CSS
-- **Type Safety**: Full TypeScript implementation
-- **Modern UI**: Clean, intuitive interface with loading states and error handling
-
-## Tech Stack
-
-- **Frontend**: Next.js 14 (App Router), React, TypeScript
-- **Styling**: Tailwind CSS, Lucide React Icons
-- **Database**: MongoDB with Mongoose ODM
-- **Search**: MongoDB text search with aggregation pipelines
-- **Deployment**: Docker support with docker-compose
-
-## Prerequisites
-
-- Node.js 18+ 
-- MongoDB (via Docker or local installation)
-- npm or yarn
-
-## Quick Start
-
-### 1. Clone and Install
-
-```bash
-git clone <repository-url>
-cd b2b-marketplace-frontend
-npm install
-```
-
-### 2. Environment Setup
-
-Create a `.env.local` file:
-
-```env
-MONGODB_URI=mongodb://localhost:27019/b2b-marketplace
-NODE_ENV=development
-```
-
-### 3. Start MongoDB (with Docker)
-
-```bash
-# Start MongoDB and Qdrant services
-docker-compose up -d
-
-# Verify services are running
-docker-compose ps
-```
-
-### 4. Seed the Database
-
-```bash
-npm run seed
-```
-
-This will create:
-- 2 categories (Televisions, Running Shoes)
-- 30+ sample listings with realistic attributes
-- Proper indexes for search performance
-
-### 5. Start the Development Server
-
-```bash
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000) and navigate to `/search` to start exploring!
-
-## API Documentation
-
-### Search API
-
-**Endpoint**: `GET /api/search`
-
-**Parameters**:
-- `q` (string): Search query for full-text search
-- `category` (string): Category slug to filter results
-- `filters` (JSON string): URL-encoded JSON object for attribute filtering
-- `page` (number): Page number for pagination (default: 1)
-- `limit` (number): Results per page (default: 20)
-
-**Example**:
-```
-GET /api/search?q=samsung&category=televisions&filters=%7B%22screenSize%22%3A%5B%2255%22%5D%7D
-```
-
-**Response**:
-```json
-{
-  "results": [...],
-  "facets": [...],
-  "total": 150,
-  "page": 1,
-  "limit": 20,
-  "hasMore": true
-}
-```
-
-### Categories API
-
-**Endpoint**: `GET /api/categories`
-
-Returns all available categories with their slugs.
-
-## Project Structure
+## Project Structure - Monorepo using pnpm workspaces
 
 ```
-├── app/                    # Next.js App Router
+├── apps/                  # apps
 │   ├── api/               # API routes
-│   ├── search/            # Search page
-│   └── layout.tsx         # Root layout
-├── components/            # React components
-│   ├── SearchBar.tsx      # Search input component
-│   ├── FilterPanel.tsx    # Dynamic filters sidebar
-│   ├── SearchResults.tsx  # Results display
-│   └── CategorySelector.tsx
-├── lib/                   # Utilities and configurations
-│   ├── mongodb.ts         # Database connection
-│   └── models/            # Mongoose models
-├── types/                 # TypeScript type definitions
+│   ├── web/               # web app
+├── packages/              # other packages
 ├── scripts/               # Database seeding scripts
+└── .gitignore             # gitignore
 └── docker-compose.yml     # Docker services
+└── package.json           # Docker services
+└── pnpm-workspace.yaml    # pnpm workspaces
 ```
 
-## Sample Searches
+---
 
-Try these searches to see the system in action:
+## ⚙️ Prerequisites
 
-1. **Text Search**: "samsung 4k tv"
-2. **Category + Filters**: Select "Televisions" → Filter by "55 inch" + "QLED"
-3. **Shoe Search**: "nike running shoes" → Filter by size "9" + color "Black"
-4. **Price Range**: Search within specific categories and observe price distributions
+- [Node.js](https://nodejs.org/) (v20+)
+- [PNPM](https://pnpm.io/) (v10+)
+- [Docker + Docker Compose](https://www.docker.com/)
 
-## Database Schema
+---
 
-### Categories Collection
-```javascript
-{
-  name: "Televisions",
-  slug: "televisions", 
-  attributeSchema: {
-    screenSize: { type: "string", label: "Screen Size", options: [...] },
-    technology: { type: "string", label: "Technology", options: [...] }
-  }
-}
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```sh
+git clone https://github.com/chundawatchatar/instinctive-studio.git
+cd instinctive-studio
 ```
 
-### Listings Collection
-```javascript
-{
-  title: "55 Samsung QLED TV",
-  description: "...",
-  price: 45000,
-  location: "Mumbai",
-  categoryId: ObjectId,
-  attributes: { screenSize: "55\"", technology: "QLED" }
-}
+### 2. Install dependencies
+```sh
+pnpm install
 ```
 
-## Development Notes
+### 3. Setup environment variables
+Copy the example env files and update as needed:
+```sh
+cp apps/web/.env.example apps/web/.env
+cp apps/api/.env.example apps/api/.env
+```
 
-- **Text Search**: Uses MongoDB's `$text` operator with text indexes
-- **Facet Generation**: Dynamic aggregation pipelines based on category schemas
-- **State Management**: URL-driven state for shareable search results
-- **Performance**: Optimized with proper indexing and lean queries
-- **Error Handling**: Comprehensive error boundaries and loading states
+### 4. Run the project
+Start everything (frontend, backend, MongoDB) with:
+```sh
+pnpm dev
+```
 
-## Production Considerations
+This will:
+- Spin up MongoDB and Mongo Express using Docker
+- Run backend (apps/api)
+- Run frontend (apps/web)
 
-For production deployment:
+Visit the app at: [http://localhost:3000](http://localhost:3000)
 
-1. **Environment Variables**: Set proper MongoDB connection strings
-2. **Indexing**: Ensure proper database indexes are created
-3. **Caching**: Consider Redis for facet caching
-4. **Search Engine**: Upgrade to Elasticsearch for advanced search features
-5. **CDN**: Use CDN for static assets
-6. **Monitoring**: Add application monitoring and logging
+---
 
-## Contributing
+## 📬 API Overview
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+The backend provides a paginated, filterable `/api/v1/search` endpoint supporting:
+- `q`: Search query
+- `category`: Category slug
+- `filters`: Encoded JSON object of selected filters
+- `page`: Page number
+- `limit`: Results per page
 
-## License
+**Example:**
+```
+GET /api/v1/search?q=electronics&category=laptop&filters=%7B%22brand%22%3A%5B%22Dell%22%5D%7D&page=1&limit=10
+```
 
-MIT License - see LICENSE file for details.
+---
+
+## 🧰 Dev Improvements & Suggestions
+
+- ✅ Monorepo using PNPM Workspaces
+- ✅ Common tsconfig
+- ✅ Pre-configured ESLint + Prettier
+- ✅ Pre-commit hook with lint-staged + husky
+- ✅ Environment isolation per app
+
+---
+
+## 📄 License
+
+MIT
+
+---
+
+*Let me know if you want it adjusted for a private repo, test instructions, or deployment!*

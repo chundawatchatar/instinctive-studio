@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "pnpm install",
     "dev": "concurrently \"docker-compose up\" \"pnpm --filter api dev\" \"pnpm --filter web dev\""
   },
   "keywords": [],
